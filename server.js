@@ -131,6 +131,44 @@ app.post("/train/auth", (req, res) => {
   }
 });
 
+//get trains
+
+const authToken = "FKDLg";
+
+const trainDetails = [
+  {
+    trainName: "Chennai Exp",
+    trainNumber: "2344",
+    departureTime: {
+      hours: 21,
+      minutes: 35,
+      seconds: 0,
+    },
+    seatsAvailable: {
+      sleeper: 3,
+      Ac: 1,
+    },
+    price: {
+      sleeper: 2,
+      Ac: 5,
+    },
+    delayedBy: 15,
+  },
+];
+
+function checkAuthToken(req, res, next) {
+  const authHeader = req.header("Authorization");
+
+  if (!authHeader || authHeader !== `Bearer ${authToken}`) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  next();
+}
+
+app.get("/train/trains", checkAuthToken, (req, res) => {
+  res.json(trainDetails);
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
