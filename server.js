@@ -169,6 +169,19 @@ function checkAuthToken(req, res, next) {
 app.get("/train/trains", checkAuthToken, (req, res) => {
   res.json(trainDetails);
 });
+
+//Auth train fetch Number
+
+app.get("/train/trains/:trainNumber", checkAuthToken, (req, res) => {
+  const { trainNumber } = req.params;
+  const train = trainDetails.find((train) => train.trainNumber === trainNumber);
+
+  if (!train) {
+    return res.status(404).json({ error: "Train not found" });
+  }
+
+  res.json(train);
+});
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
