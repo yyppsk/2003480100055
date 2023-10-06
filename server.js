@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
 
 const fs = require("fs");
 const path = require("path");
@@ -24,6 +25,13 @@ if (!fs.existsSync(dataFilePath)) {
   });
 }
 
+const generateRandomToken = (length) => {
+  return crypto.randomBytes(length).toString("hex");
+};
+
+const accessToken = generateRandomToken(32);
+console.log("Generated Access Token:", accessToken);
+
 const generateRandomClientId = () => {
   return uuidv4();
 };
@@ -37,6 +45,8 @@ const clientSecret = generateRandomClientSecret();
 
 console.log("Generated Client ID:", clientId);
 console.log("Generated Client Secret:", clientSecret);
+
+//Register
 
 app.post("/train/register", (req, res) => {
   console.log("Received a POST request to /train/register");
@@ -92,6 +102,30 @@ app.post("/train/register", (req, res) => {
         });
       }
     );
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+//auth
+
+app.post("/train/auth", (req, res) => {
+  try {
+    const {
+      companyName,
+      clientId,
+      ownerName,
+      ownerEmail,
+      rollNo,
+      clientSecret,
+    } = req.body;
+
+    const accessToken = generateRandomToken(32);
+    res.status(200).json({
+      token_type: "Bearer",
+      access_token: accessToken,
+      expires_in: 1682629264,
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
