@@ -52,5 +52,23 @@
       "Ac": 4
     },
     "delayedBy": 5
+  },
+  {
+    "trainName": "Delhi Duronto",
+    "trainNumber": "1234",
+    "departureTime": {
+      "hours": 19,
+      "minutes": 0,
+      "seconds": 0
+    },
+    "seatsAvailable": {
+      "sleeper": 4,
+      "Ac": 2
+    },
+    "price": {
+      "sleeper": 4,
+      "Ac": 7
+    },
+    "delayedBy": 20
   }
 ]

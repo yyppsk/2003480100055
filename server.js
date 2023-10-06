@@ -153,7 +153,7 @@ async function loadTrainDetails() {
 loadTrainDetails();
 
 // mock data for server
-const trainDetails = [
+const trainDetailsServer = [
   {
     trainName: "Chennai Exp",
     trainNumber: "2344",
@@ -250,18 +250,20 @@ function customSort(a, b) {
 }
 
 app.get("/train/trains", checkAuthToken, (req, res) => {
-  trainDetails.sort(customSort);
-  console.log(trainDetails);
-  res.json(trainDetails);
+  trainDetailsServer.sort(customSort);
+  console.log(trainDetailsServer);
+  res.json(trainDetailsServer);
 });
 
 //Auth train fetch Number
 
 app.get("/train/trains/:trainNumber", checkAuthToken, (req, res) => {
   const { trainNumber } = req.params;
-  trainDetails.sort(customSort);
+  trainDetailsServer.sort(customSort);
 
-  const train = trainDetails.find((train) => train.trainNumber === trainNumber);
+  const train = trainDetailsServer.find(
+    (train) => train.trainNumber === trainNumber
+  );
 
   if (!train) {
     return res.status(404).json({ error: "Train not found" });
@@ -275,11 +277,17 @@ app.get("/train/trains/:trainNumber", checkAuthToken, (req, res) => {
 app.post("/train/add", (req, res) => {
   try {
     const newTrain = req.body;
+    console.log("Received new train data:", req.body);
+
+    const dataFilePath = "./trainData.json";
+    const existingData = fs.readFileSync(dataFilePath, "utf8");
+    const trainDetails = JSON.parse(existingData);
 
     trainDetails.push(newTrain);
 
-    const dataFilePath = "./trainDetails.json";
     fs.writeFileSync(dataFilePath, JSON.stringify(trainDetails, null, 2));
+
+    trainDetailsServer.push(trainDetails); //must sustain server state to work
 
     res.status(201).json({ message: "Train added successfully" });
   } catch (error) {
@@ -287,6 +295,7 @@ app.post("/train/add", (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
