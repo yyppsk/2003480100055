@@ -88,14 +88,11 @@
           alert("Train Number is required.");
           return;
         }
+        const authToken = document.getElementById("authToken").value;
         const headers = {
           Authorization: `Bearer ${authToken}`,
         };
 
-        fetch("http://localhost:3000/train/trains", {
-          method: "GET",
-          headers: headers,
-        });
         fetch(`http://localhost:3000/train/trains/${trainNumberInput}`, {
           method: "GET",
           headers: headers,
@@ -107,7 +104,27 @@
             return response.json();
           })
           .then((data) => {
-            displayData(data);
+            if (typeof data === "object" && !Array.isArray(data)) {
+              const trainDataDiv = document.getElementById("trainData");
+
+              trainDataDiv.innerHTML = "";
+
+              const trainInfo = document.createElement("div");
+              trainInfo.className = "mb-4";
+              trainInfo.innerHTML = `
+            <h2 class="text-lg font-semibold">${data.trainName}</h2>
+            <p>Train Number: ${data.trainNumber}</p>
+            <p>Departure Time: ${data.departureTime.hours}:${data.departureTime.minutes}</p>
+            <p>Seats Available (Sleeper): ${data.seatsAvailable.sleeper}</p>
+            <p>Seats Available (AC): ${data.seatsAvailable.Ac}</p>
+            <p>Price (Sleeper): ${data.price.sleeper}</p>
+            <p>Price (AC): ${data.price.Ac}</p>
+            <p>Delayed By: ${data.delayedBy} minutes</p>
+        `;
+              trainDataDiv.appendChild(trainInfo);
+
+              console.log("Single record:", data);
+            } else displayData(data);
           })
           .catch((error) => {
             console.error(error.message);
