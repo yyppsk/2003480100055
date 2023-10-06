@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title>Train Details</title>
+  </head>
+  <body class="bg-gray-100 p-4">
+    <div class="container mx-auto">
+      <h1 class="text-2xl font-semibold mb-4">Train Details</h1>
+
+      <div class="mb-4">
+        <label
+          for="trainNumber"
+          class="block text-gray-700 text-sm font-bold mb-2"
+          >Search by Train Number:</label
+        >
+        <input
+          type="text"
+          id="trainNumber"
+          class="border rounded w-full py-2 px-3"
+          placeholder="Enter Train Number"
+        />
+        <button
+          id="searchByTrainNumber"
+          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-2"
+        >
+          Search
+        </button>
+      </div>
+
+      <div class="mb-4">
+        <label
+          for="authToken"
+          class="block text-gray-700 text-sm font-bold mb-2"
+          >Authorization Token:</label
+        >
+        <input
+          type="text"
+          id="authToken"
+          class="border rounded w-full py-2 px-3"
+          placeholder="Enter Bearer Token"
+        />
+        <button
+          id="searchByAuthToken"
+          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-2"
+        >
+          Search
+        </button>
+      </div>
+
+      <div id="trainData" class="mt-8"></div>
+    </div>
+
+    <script>
+      function displayData(data) {
+        const trainDataDiv = document.getElementById("trainData");
+
+        trainDataDiv.innerHTML = "";
+
+        data.forEach((train) => {
+          const trainInfo = document.createElement("div");
+          trainInfo.className = "mb-4";
+          trainInfo.innerHTML = `
+            <h2 class="text-lg font-semibold">${train.trainName}</h2>
+            <p>Train Number: ${train.trainNumber}</p>
+            <p>Departure Time: ${train.departureTime.hours}:${train.departureTime.minutes}</p>
+            <p>Seats Available (Sleeper): ${train.seatsAvailable.sleeper}</p>
+            <p>Seats Available (AC): ${train.seatsAvailable.Ac}</p>
+            <p>Price (Sleeper): ${train.price.sleeper}</p>
+            <p>Price (AC): ${train.price.Ac}</p>
+            <p>Delayed By: ${train.delayedBy} minutes</p>
+          `;
+          trainDataDiv.appendChild(trainInfo);
+        });
+      }
+
+      const searchByTrainNumberButton = document.getElementById(
+        "searchByTrainNumber"
+      );
+      searchByTrainNumberButton.addEventListener("click", () => {
+        const trainNumberInput = document.getElementById("trainNumber").value;
+        if (!trainNumberInput) {
+          alert("Train Number is required.");
+          return;
+        }
+        const headers = {
+          Authorization: `Bearer ${authToken}`,
+        };
+
+        fetch("http://localhost:3000/train/trains", {
+          method: "GET",
+          headers: headers,
+        });
+        fetch(`http://localhost:3000/train/trains/${trainNumberInput}`, {
+          method: "GET",
+          headers: headers,
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Train not found.");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            displayData(data);
+          })
+          .catch((error) => {
+            console.error(error.message);
+            alert("Error: " + error.message);
+          });
+      });
+
+      // Search by Authorization Token
+      const searchByAuthTokenButton =
+        document.getElementById("searchByAuthToken");
+      searchByAuthTokenButton.addEventListener("click", () => {
+        const authToken = document.getElementById("authToken").value;
+
+        if (!authToken) {
+          alert("Authorization Token is required.");
+          return;
+        }
+
+        const headers = {
+          Authorization: `Bearer ${authToken}`,
+        };
+
+        fetch("http://localhost:3000/train/trains", {
+          method: "GET",
+          headers: headers,
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                "Error fetching trains. Please check the Authorization Token."
+              );
+            }
+            return response.json();
+          })
+          .then((data) => {
+            displayData(data);
+          })
+          .catch((error) => {
+            console.error(error.message);
+            alert("Error: " + error.message);
+          });
+      });
+    </script>
+  </body>
+</html>

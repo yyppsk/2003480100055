@@ -46,7 +46,6 @@
       fetchTrainsButton.addEventListener("click", () => {
         const authToken = authTokenInput.value;
 
-        // Check if the Authorization Token is empty
         if (!authToken) {
           trainDataDiv.innerHTML = "Authorization Token is required.";
           return;
@@ -69,10 +68,8 @@
             return response.json();
           })
           .then((data) => {
-            // Clear any previous data
             trainDataDiv.innerHTML = "";
 
-            // Display fetched data
             data.forEach((train) => {
               const trainInfo = document.createElement("div");
               trainInfo.className = "mb-4";

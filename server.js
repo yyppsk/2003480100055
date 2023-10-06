@@ -17,6 +17,10 @@ app.get("/trains/search", (req, res) => {
   res.sendFile(trainsHtmlPath);
 });
 
+app.get("/trainbynumber", (req, res) => {
+  res.sendFile(path.join(__dirname, "trainbynumber.html"));
+});
+
 const dataFilePath = "./companies.json";
 
 if (!fs.existsSync(dataFilePath)) {
