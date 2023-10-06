@@ -11,6 +11,20 @@ const fs = require("fs");
 
 const dataFilePath = "./companies.json";
 
+const generateRandomClientId = () => {
+  return uuidv4();
+};
+
+const generateRandomClientSecret = () => {
+  return uuidv4();
+};
+
+const clientId = generateRandomClientId();
+const clientSecret = generateRandomClientSecret();
+
+console.log("Generated Client ID:", clientId);
+console.log("Generated Client Secret:", clientSecret);
+
 app.post("/train/register", (req, res) => {
   try {
     const { companyName, ownerName, rollNo, ownerEmail, accessCode } = req.body;
