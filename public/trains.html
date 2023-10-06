@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title>Train Details</title>
+  </head>
+  <body class="bg-gray-100 p-4">
+    <div class="container mx-auto">
+      <h1 class="text-2xl font-semibold mb-4">Train Details</h1>
+
+      <div class="mb-4">
+        <label
+          for="authToken"
+          class="block text-gray-700 text-sm font-bold mb-2"
+          >Authorization Token:</label
+        >
+        <input
+          type="text"
+          id="authToken"
+          class="border rounded w-full py-2 px-3"
+          placeholder="Bearer Token"
+        />
+      </div>
+
+      <button
+        id="fetchTrains"
+        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+      >
+        Fetch Trains
+      </button>
+
+      <div id="trainData" class="mt-8"></div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const fetchTrainsBtn = document.getElementById("fetchTrains");
+        const authTokenInput = document.getElementById("authToken");
+        const trainDataDisplay = document.getElementById("trainData");
+
+        fetchTrainsBtn.addEventListener("click", async () => {
+          const authToken = authTokenInput.value;
+
+          try {
+            const response = await fetch(
+              "http://localhost:/3000/train/trains",
+              {
+                headers: {
+                  method: "GET",
+                  Authorization: authToken,
+                },
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(`Request failed with status ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            trainDataDisplay.innerHTML = JSON.stringify(data, null, 2);
+          } catch (error) {
+            console.error("Error fetching trains:", error);
+            trainDataDisplay.innerHTML =
+              "Error fetching trains. Please check the Authorization Token.";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

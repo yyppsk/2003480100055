@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration Form</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.7/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="min-h-screen flex items-center justify-center bg-gray-100">
+      <div class="bg-white p-8 rounded shadow-md w-96">
+        <h2 class="text-2xl font-semibold mb-4">Register Company</h2>
+        <form id="registration-form">
+          <div class="mb-4">
+            <label for="companyName" class="block text-gray-700 font-semibold"
+              >Company Name</label
+            >
+            <input
+              type="text"
+              id="companyName"
+              name="companyName"
+              class="border rounded w-full p-2"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="ownerName" class="block text-gray-700 font-semibold"
+              >Owner Name</label
+            >
+            <input
+              type="text"
+              id="ownerName"
+              name="ownerName"
+              class="border rounded w-full p-2"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="rollNo" class="block text-gray-700 font-semibold"
+              >Roll No</label
+            >
+            <input
+              type="text"
+              id="rollNo"
+              name="rollNo"
+              class="border rounded w-full p-2"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="ownerEmail" class="block text-gray-700 font-semibold"
+              >Owner Email</label
+            >
+            <input
+              type="email"
+              id="ownerEmail"
+              name="ownerEmail"
+              class="border rounded w-full p-2"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="accessCode" class="block text-gray-700 font-semibold"
+              >Access Code</label
+            >
+            <input
+              type="password"
+              id="accessCode"
+              name="accessCode"
+              class="border rounded w-full p-2"
+            />
+          </div>
+          <div class="text-center">
+            <button
+              type="submit"
+              class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              Register
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
