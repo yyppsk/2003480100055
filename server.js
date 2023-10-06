@@ -131,10 +131,28 @@ app.post("/train/auth", (req, res) => {
   }
 });
 
-//get trains
+//train handling
+//push data from trindata json to array
+const util = require("util");
 
-const authToken = "FKDLg";
+const readFileAsync = util.promisify(fs.readFile);
+let trainData = [];
+async function loadTrainDetails() {
+  try {
+    const dataFilePath = "./trainData.json";
 
+    const jsonData = await readFileAsync(dataFilePath, "utf8");
+
+    trainData = JSON.parse(jsonData);
+
+    return trainData;
+  } catch (error) {
+    throw new Error("Error loading train details: " + error.message);
+  }
+}
+loadTrainDetails();
+
+// mock data for server
 const trainDetails = [
   {
     trainName: "Chennai Exp",
@@ -154,7 +172,46 @@ const trainDetails = [
     },
     delayedBy: 15,
   },
+  {
+    trainName: "Mumbai Rajdhani",
+    trainNumber: "1201",
+    departureTime: {
+      hours: 18,
+      minutes: 45,
+      seconds: 0,
+    },
+    seatsAvailable: {
+      sleeper: 5,
+      Ac: 3,
+    },
+    price: {
+      sleeper: 3,
+      Ac: 6,
+    },
+    delayedBy: 10,
+  },
+  {
+    trainName: "Kolkata Express",
+    trainNumber: "9876",
+    departureTime: {
+      hours: 22,
+      minutes: 15,
+      seconds: 0,
+    },
+    seatsAvailable: {
+      sleeper: 2,
+      Ac: 0,
+    },
+    price: {
+      sleeper: 2,
+      Ac: 4,
+    },
+    delayedBy: 5,
+  },
 ];
+//get trains
+
+const authToken = "FKDLg";
 
 function checkAuthToken(req, res, next) {
   const authHeader = req.header("Authorization");
@@ -166,7 +223,35 @@ function checkAuthToken(req, res, next) {
   next();
 }
 
+//Custom sort
+function customSort(a, b) {
+  // asc ord price
+  const priceA = a.price.sleeper + a.price.Ac;
+  const priceB = b.price.sleeper + b.price.Ac;
+  if (priceA < priceB) return -1;
+  if (priceA > priceB) return 1;
+
+  // desc tkt
+  const totalSeatsA = a.seatsAvailable.sleeper + a.seatsAvailable.Ac;
+  const totalSeatsB = b.seatsAvailable.sleeper + b.seatsAvailable.Ac;
+  if (totalSeatsA > totalSeatsB) return -1;
+  if (totalSeatsA < totalSeatsB) return 1;
+
+  //desc departure time
+  const departureTimeA =
+    a.departureTime.hours * 60 + a.departureTime.minutes + a.delayedBy;
+  const departureTimeB =
+    b.departureTime.hours * 60 + b.departureTime.minutes + b.delayedBy;
+  if (departureTimeA > departureTimeB) return -1;
+  if (departureTimeA < departureTimeB) return 1;
+
+  //og order
+  return 0;
+}
+
 app.get("/train/trains", checkAuthToken, (req, res) => {
+  trainDetails.sort(customSort);
+  console.log(trainDetails);
   res.json(trainDetails);
 });
 
@@ -174,6 +259,8 @@ app.get("/train/trains", checkAuthToken, (req, res) => {
 
 app.get("/train/trains/:trainNumber", checkAuthToken, (req, res) => {
   const { trainNumber } = req.params;
+  trainDetails.sort(customSort);
+
   const train = trainDetails.find((train) => train.trainNumber === trainNumber);
 
   if (!train) {
@@ -181,6 +268,24 @@ app.get("/train/trains/:trainNumber", checkAuthToken, (req, res) => {
   }
 
   res.json(train);
+});
+
+//Evolve train data , new trains
+
+app.post("/train/add", (req, res) => {
+  try {
+    const newTrain = req.body;
+
+    trainDetails.push(newTrain);
+
+    const dataFilePath = "./trainDetails.json";
+    fs.writeFileSync(dataFilePath, JSON.stringify(trainDetails, null, 2));
+
+    res.status(201).json({ message: "Train added successfully" });
+  } catch (error) {
+    console.error("Error adding train:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

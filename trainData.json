@@ -1,0 +1,56 @@
+[
+  {
+    "trainName": "Chennai Exp",
+    "trainNumber": "2344",
+    "departureTime": {
+      "hours": 21,
+      "minutes": 35,
+      "seconds": 0
+    },
+    "seatsAvailable": {
+      "sleeper": 3,
+      "Ac": 1
+    },
+    "price": {
+      "sleeper": 2,
+      "Ac": 5
+    },
+    "delayedBy": 15
+  },
+  {
+    "trainName": "Mumbai Rajdhani",
+    "trainNumber": "1201",
+    "departureTime": {
+      "hours": 18,
+      "minutes": 45,
+      "seconds": 0
+    },
+    "seatsAvailable": {
+      "sleeper": 5,
+      "Ac": 3
+    },
+    "price": {
+      "sleeper": 3,
+      "Ac": 6
+    },
+    "delayedBy": 10
+  },
+  {
+    "trainName": "Kolkata Express",
+    "trainNumber": "9876",
+    "departureTime": {
+      "hours": 22,
+      "minutes": 15,
+      "seconds": 0
+    },
+    "seatsAvailable": {
+      "sleeper": 2,
+      "Ac": 0
+    },
+    "price": {
+      "sleeper": 2,
+      "Ac": 4
+    },
+    "delayedBy": 5
+  }
+]
